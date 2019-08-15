@@ -96,8 +96,8 @@ class UDC:
             r_u_m[j][:len(row_r)] = 1
         r_m[:len(r)] = 1
 
-        for t in true_r:
-            y[t] = 1
+        #for t in true_r:
+        y[true_r] = 1
 
         if arg.gpu:
             c_out, c_u_m, c_m, r_out, r_u_m, r_m, y = c_out.cuda(), c_u_m.cuda(), c_m.cuda(), r_out.cuda(), r_u_m.cuda(), \
@@ -107,9 +107,11 @@ class UDC:
 
 
 if __name__ == '__main__':
-    data = UDC(train_inp='subtask1/data/Task_1/ubuntu/task-1.ubuntu.train.json',
-               val_inp='subtask1/data/Task_1/ubuntu/task-1.ubuntu.dev.json')
+    data = UDC(train_inp=arg.train_inp,
+               val_inp=arg.val_inp)
     train_iter = enumerate(data.get_batches('valid'))
+    for it, mb in train_iter:
+        c, c_u_m, c_m, r, r_u_m, r_m, y = mb
 
 
 
