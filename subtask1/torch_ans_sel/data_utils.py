@@ -13,8 +13,8 @@ class UDC:
         #load bpe model
         self.bpe = yttm.BPE(arg.bpe_model)
         #load main data
-        #with open(train_inp, 'r') as f:
-        #    self.train_in = json.load(f)
+        with open(train_inp, 'r') as f:
+            self.train_in = json.load(f)
         with open(val_inp, 'r') as f:
             self.val_in = json.load(f)
         if test_inp:
@@ -23,7 +23,7 @@ class UDC:
 
         print ('Loaded all data from DISK...')
 
-        #self.train = self.process_data(self.train_in)
+        self.train = self.process_data(self.train_in)
         self.valid = self.process_data(self.val_in)
 
         if test_inp:
