@@ -23,7 +23,7 @@ def get_mrr(scores, y):
     "get MRR per batch"
     sorted_scores, indices = torch.sort(scores, descending=True)
     #pos = (indices == torch.argmax(y).item()).nonzero().item() # uncomment if sigmoid
-    pos = (indices == y).nonzero().item()
+    pos = (indices == y.item()).nonzero().item()
     return 1/(pos+1)
 
 
@@ -57,7 +57,7 @@ def eval_model(model, dataset, mode='valid', gpu=False, no_tqdm=False):
         #scores_mb = torch.sigmoid(model(c, c_u_m, c_m, r, r_u_m, r_m))#Appropritate this line while running different models.
         scores_mb = (model(c, c_u_m, c_m, r, r_u_m, r_m))#Appropritate this line while running different models.
         # scores_mb = scores_mb.cpu() if gpu else scores_mb
-        mrr_scores.append(get_mrr(scores_mb, y))
+        mrr_scores.append(get_mrr(scores_mb.squeeze(), y))
 
     # scores = np.concatenate(scores)
 
