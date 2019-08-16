@@ -23,7 +23,7 @@ def get_mrr(scores, y):
     "get MRR per batch"
     sorted_scores, indices = torch.sort(scores, descending=True)
     pos = (indices == torch.argmax(y).item()).nonzero().item()
-    return pos+1
+    return 1/(pos+1)
 
 
 def eval_model(model, dataset, mode='valid', gpu=False, no_tqdm=False):

@@ -52,7 +52,8 @@ def train():
             solver.zero_grad()
 
 
-        eval_model(model, data, 'valid')
+        val_mrr = eval_model(model, data, 'valid')
+        print ('Validation MRR for this epoch:'+str(val_mrr))
 
 
 if __name__ == '__main__':
