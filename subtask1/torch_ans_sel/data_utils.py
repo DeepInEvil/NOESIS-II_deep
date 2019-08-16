@@ -13,8 +13,8 @@ class UDC:
         #load bpe model
         self.bpe = yttm.BPE(arg.bpe_model)
         #load main data
-        with open(train_inp, 'r') as f:
-            self.train_in = json.load(f)
+        #with open(train_inp, 'r') as f:
+        #    self.train_in = json.load(f)
         with open(val_inp, 'r') as f:
             self.val_in = json.load(f)
         if test_inp:
@@ -23,7 +23,7 @@ class UDC:
 
         print ('Loaded all data from DISK...')
 
-        self.train = self.process_data(self.train_in)
+        #self.train = self.process_data(self.train_in)
         self.valid = self.process_data(self.val_in)
 
         if test_inp:
@@ -84,7 +84,8 @@ class UDC:
         r_out = torch.zeros([l_r, max_len_r]).long()
         r_u_m = torch.zeros([l_r, max_len_r]).float()
         r_m = torch.zeros(l_r).float()
-        y = torch.zeros(l_r)
+        #y = torch.zeros(l_r)
+        y = torch.tensor(true_r)  # for softmax loss
 
         for j, (row_c) in enumerate(c):
             c_out[j][:len(row_c)] = torch.Tensor(row_c)
@@ -96,8 +97,9 @@ class UDC:
             r_u_m[j][:len(row_r)] = 1
         r_m[:len(r)] = 1
 
+        # uncomment for sigmoid loss
         #for t in true_r:
-        y[true_r] = 1
+        #y[true_r] = 1
 
         if arg.gpu:
             c_out, c_u_m, c_m, r_out, r_u_m, r_m, y = c_out.cuda(), c_u_m.cuda(), c_m.cuda(), r_out.cuda(), r_u_m.cuda(), \

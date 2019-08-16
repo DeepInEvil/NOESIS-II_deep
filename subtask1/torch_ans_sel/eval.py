@@ -22,7 +22,8 @@ def recall_at_k_np(scores, ks=[1, 2, 3, 4, 5]):
 def get_mrr(scores, y):
     "get MRR per batch"
     sorted_scores, indices = torch.sort(scores, descending=True)
-    pos = (indices == torch.argmax(y).item()).nonzero().item()
+    #pos = (indices == torch.argmax(y).item()).nonzero().item() # uncomment if sigmoid
+    pos = (indices == y.item()).nonzero().item()
     return 1/(pos+1)
 
 
@@ -53,7 +54,8 @@ def eval_model(model, dataset, mode='valid', gpu=False, no_tqdm=False):
         c, c_u_m, c_m, r, r_u_m, r_m, y = mb
 
         # Get scores
-        scores_mb = torch.sigmoid(model(c, c_u_m, c_m, r, r_u_m, r_m))#Appropritate this line while running different models.
+        #scores_mb = torch.sigmoid(model(c, c_u_m, c_m, r, r_u_m, r_m))#Appropritate this line while running different models.
+        scores_mb = (model(c, c_u_m, c_m, r, r_u_m, r_m))#Appropritate this line while running different models.
         # scores_mb = scores_mb.cpu() if gpu else scores_mb
         mrr_scores.append(get_mrr(scores_mb, y))
 

@@ -1,6 +1,6 @@
 import torch
 import torch.nn as nn
-#import torch.nn.functional as F
+import torch.nn.functional as F
 
 
 class TransformerRNN(nn.Module):
@@ -50,17 +50,18 @@ class TransformerRNN(nn.Module):
 
         c_out, (ht, ct) = self.context_rnn(c)  #
         c_out = self.concat_rnn_states(c_out, c_u_m)
-        c_out = self.context_transformer(c_out) # pass through the transformer
+        c_out = self.context_transformer(c_out) # pass through the transformer C X S X 2*H
 
         r_out, (ht, ct) = self.context_rnn(r)  #
         r_out = self.concat_rnn_states(r_out, r_u_m)[:, -1].squeeze()
-
-        c_out = c_out[:, -1].squeeze().expand(r_out.size(0), c_out.size(0), c_out.size(-1))
-        o = self.M(c_out.sum(1)).unsqueeze(1)
+        #c_out = F.max_pool1d(c_out, c_out.size(0))
+        c_out = c_out[:, -1].squeeze().expand(r_out.size(0), c_out.size(0), c_out.size(-1))  # R X C X 2*H
+        #c_out = F.max_pool1d(c_out)
+        o = self.M(c_out.sum(1)).unsqueeze(1)  # R X 1 X 2*H
         # print (o.size(), r_out.size())
-        o = torch.bmm(o, r_out.unsqueeze(2))
+        o = torch.bmm(o, r_out.unsqueeze(2)).squeeze()
         # print (o.size())
-        return o.squeeze()
+        return F.log_softmax(o).unsqueeze(0) # unsqueeze for nll loss
 
     def concat_rnn_states(self, x, m):
         """
