@@ -23,7 +23,7 @@ class UDC:
 
         print ('Loaded all data from DISK...')
 
-        # self.train = self.process_data(self.train_in)
+        self.train = self.process_data(self.train_in)
         self.valid = self.process_data(self.val_in)
 
         if test_inp:
