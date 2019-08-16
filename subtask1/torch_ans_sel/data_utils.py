@@ -53,7 +53,7 @@ class UDC:
                     for r in correct_resp:
                         dat.append([context, responses, len(context), len(responses), r])
                 else:
-                    dat.append([context, responses, len(context), len(responses), r])
+                    dat.append([context, responses, len(context), len(responses), correct_resp])
                     #dat.append([context, responses, len(context), len(responses), correct_resp])
             except IndexError:
                 # print(t['options-for-correct-answers'])
