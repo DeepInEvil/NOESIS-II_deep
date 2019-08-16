@@ -16,7 +16,7 @@ if args.gpu:
 data = UDC(train_inp=args.train_inp,
            val_inp=args.val_inp)
 
-model = TransformerRNN(emb_dim=args.input_size, n_vocab=data.bpe.vocab_size(), rnn_h_dim=256)
+model = TransformerRNN(emb_dim=args.input_size, n_vocab=data.bpe.vocab_size(), rnn_h_dim=256, gpu = args.gpu)
 criteria = nn.BCEWithLogitsLoss()
 solver = optim.Adam(model.parameters(), lr=args.lr)
 

@@ -30,6 +30,9 @@ class TransformerRNN(nn.Module):
         self.M = nn.Linear(2*self.h_dim, 2*self.h_dim)
         #self.b = nn.Parameter(torch.FloatTensor([0]))
 
+        if gpu:
+            self.cuda()
+
     def forward(self, c, c_u_m, c_m, r, r_u_m, r_m):
         """
 
