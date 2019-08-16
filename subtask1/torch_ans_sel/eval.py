@@ -65,5 +65,5 @@ def eval_model(model, dataset, mode='valid', gpu=False, no_tqdm=False):
 
     #scores = scores.reshape(-1, 10)  # 1 in 10
     #recall_at_ks = [r for r in recall_at_k_np(scores)]
-    mrr_tot = np.averag(mrr_scores)
+    mrr_tot = np.average(mrr_scores)
     return mrr_tot
