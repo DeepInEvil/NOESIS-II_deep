@@ -53,7 +53,7 @@ def eval_model(model, dataset, mode='valid', gpu=False, no_tqdm=False):
         c, c_u_m, c_m, r, r_u_m, r_m, y = mb
 
         # Get scores
-        scores_mb = F.sigmoid(model(c, c_u_m, c_m, r, r_u_m, r_m))#Appropritate this line while running different models.
+        scores_mb = torch.sigmoid(model(c, c_u_m, c_m, r, r_u_m, r_m))#Appropritate this line while running different models.
         # scores_mb = scores_mb.cpu() if gpu else scores_mb
         mrr_scores.append(get_mrr(scores_mb, y))
 
