@@ -49,7 +49,12 @@ class UDC:
                 # print(t['options-for-correct-answers'][0]['candidate-id'])
                 correct_resp = [i for i, r in enumerate(t['options-for-next'])
                             if t['options-for-correct-answers'][0]['candidate-id'] == r['candidate-id']]
-                dat.append([context, responses, len(context), len(responses), correct_resp])
+                if len(correct_resp) > 1:
+                    for r in correct_resp:
+                        dat.append([context, responses, len(context), len(responses), r])
+                else:
+                    dat.append([context, responses, len(context), len(responses), r])
+                    #dat.append([context, responses, len(context), len(responses), correct_resp])
             except IndexError:
                 # print(t['options-for-correct-answers'])
                 continue
