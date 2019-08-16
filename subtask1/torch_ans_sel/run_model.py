@@ -28,11 +28,11 @@ def train():
         print('Epoch-{}'.format(epoch))
         print('-------------------------------------------')
 
-        train_iter = enumerate(data.get_batches('train'))
+        train_iter = enumerate(data.get_batches('valid'))
         if not args.no_tqdm:
             train_iter = tqdm(train_iter)
             train_iter.set_description_str('Training')
-            train_iter.total = len(data.train)
+            train_iter.total = len(data.valid)
 
         for it, mb in train_iter:
             c, c_u_m, c_m, r, r_u_m, r_m, y = mb
@@ -45,7 +45,7 @@ def train():
             #loss = F.nll_loss(pred, r)
             #loss = criteria(pred, y)
             #y = torch.argmax(y)
-            #print (y.size())
+            print (y.size())
             loss = criteria(pred, y)
 
             loss.backward()
