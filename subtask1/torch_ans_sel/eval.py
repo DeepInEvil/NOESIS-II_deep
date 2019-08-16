@@ -23,7 +23,7 @@ def get_mrr(scores, y):
     "get MRR per batch"
     sorted_scores, indices = torch.sort(scores, descending=True)
     #pos = (indices == torch.argmax(y).item()).nonzero().item() # uncomment if sigmoid
-    pos = (indices == y.item()).nonzero().item()
+    pos = (indices == y).nonzero().item()
     return 1/(pos+1)
 
 

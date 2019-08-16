@@ -49,7 +49,7 @@ class UDC:
                 # print(t['options-for-correct-answers'][0]['candidate-id'])
                 correct_resp = [i for i, r in enumerate(t['options-for-next'])
                             if t['options-for-correct-answers'][0]['candidate-id'] == r['candidate-id']]
-                if len(correct_resp) > 1:
+                if len(correct_resp) > 1: # duplicate data for multiple correct labels
                     for r in correct_resp:
                         dat.append([context, responses, len(context), len(responses), [r]])
                 else:
