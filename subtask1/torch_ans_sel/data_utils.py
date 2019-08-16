@@ -51,7 +51,7 @@ class UDC:
                             if t['options-for-correct-answers'][0]['candidate-id'] == r['candidate-id']]
                 if len(correct_resp) > 1:
                     for r in correct_resp:
-                        dat.append([context, responses, len(context), len(responses), r])
+                        dat.append([context, responses, len(context), len(responses), list(r)])
                 else:
                     dat.append([context, responses, len(context), len(responses), correct_resp])
                     #dat.append([context, responses, len(context), len(responses), correct_resp])
