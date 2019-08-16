@@ -19,7 +19,7 @@ class TransformerRNN(nn.Module):
                                    dropout=self.rnn_drop,
                                    bidirectional=True,
                                    batch_first=True)
-        self.context_transformer = nn.TransformerEncoderLayer(d_model=self.h_dim*2, nhead=4)
+        # self.context_transformer = nn.TransformerEncoderLayer(d_model=self.h_dim*2, nhead=4)
 
         self.response_rnn = nn.LSTM(input_size=self.emb_dim,
                                    hidden_size=self.h_dim,
@@ -49,8 +49,8 @@ class TransformerRNN(nn.Module):
         r = self.emb_drop(self.word_embed(r))  # R X S X E
 
         c_out, (ht, ct) = self.context_rnn(c)  #
-        c_out = self.concat_rnn_states(c_out, c_u_m)
-        c_out = self.context_transformer(c_out) # pass through the transformer C X S X 2*H
+        c_out = self.concat_rnn_states(c_out, c_u_m)  # C X S X 2*H
+        # c_out = self.context_transformer(c_out) # pass through the transformer C X S X 2*H
 
         r_out, (ht, ct) = self.context_rnn(r)  #
         r_out = self.concat_rnn_states(r_out, r_u_m)[:, -1].squeeze()

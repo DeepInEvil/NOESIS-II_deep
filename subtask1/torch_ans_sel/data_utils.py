@@ -2,6 +2,8 @@ import json
 import youtokentome as yttm
 import numpy as np
 import torch
+from multiprocessing import Pool
+import multiprocessing as mp
 from args import get_args
 
 arg = get_args()
@@ -12,6 +14,7 @@ class UDC:
         print ('Loading all data...........................')
         #load bpe model
         self.bpe = yttm.BPE(arg.bpe_model)
+        pool = Pool(processes=mp.cpu_count())
         #load main data
         #with open(train_inp, 'r') as f:
         #    self.train_in = json.load(f)
@@ -24,7 +27,7 @@ class UDC:
         print ('Loaded all data from DISK...')
 
         #self.train = self.process_data(self.train_in)
-        self.valid = self.process_data(self.val_in)
+        self.valid = pool.map(self.process_data, self.val_in)
 
         if test_inp:
             self.test = self.process_data(self.test_in)
