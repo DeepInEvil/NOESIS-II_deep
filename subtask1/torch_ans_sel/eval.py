@@ -53,17 +53,18 @@ def eval_model(model, dataset, mode='valid', gpu=False, no_tqdm=False):
         c, c_u_m, c_m, r, r_u_m, r_m, y = mb
 
         # Get scores
-        scores_mb = F.sigmoid(model(c, c_u_m, c_m, r, r_u_m, r_m))  # Appropritate this line while running different models.
-        #scores_mb = scores_mb.cpu() if gpu else scores_mb
+        scores_mb = F.sigmoid(model(c, c_u_m, c_m, r, r_u_m, r_m))#Appropritate this line while running different models.
+        # scores_mb = scores_mb.cpu() if gpu else scores_mb
         mrr_scores.append(get_mrr(scores_mb, y))
 
-    #scores = np.concatenate(scores)
+    # scores = np.concatenate(scores)
 
     # Handle the case when numb. of data not divisible by 10
-    #mod = scores.shape[0] % 10
-    #scores = scores[:-mod if mod != 0 else None]
+    # mod = scores.shape[0] % 10
+    # scores = scores[:-mod if mod != 0 else None]
 
-    #scores = scores.reshape(-1, 10)  # 1 in 10
-    #recall_at_ks = [r for r in recall_at_k_np(scores)]
+    # scores = scores.reshape(-1, 10)  # 1 in 10
+    # recall_at_ks = [r for r in recall_at_k_np(scores)]
     mrr_tot = np.average(mrr_scores)
+
     return mrr_tot
