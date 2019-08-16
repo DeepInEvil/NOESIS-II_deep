@@ -41,13 +41,13 @@ def eval_model(model, dataset, mode='valid', gpu=False, no_tqdm=False):
 
     assert mode in ['valid', 'test']
 
-    data_iter = dataset.get_iter(mode)
+    data_iter = dataset.get_batches(mode)
 
     if not no_tqdm:
         data_iter = tqdm(data_iter)
         data_iter.set_description_str('Evaluation')
-        n_data = dataset.n_valid if mode == 'valid' else dataset.n_test
-        data_iter.total = n_data // dataset.batch_size
+        n_data = len(dataset.valid) if mode == 'valid' else len(dataset.test)
+        data_iter.total = n_data
 
     for mb in data_iter:
         c, c_u_m, c_m, r, r_u_m, r_m, y = mb
