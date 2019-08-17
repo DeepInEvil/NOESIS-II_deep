@@ -19,6 +19,11 @@ class TransformerRNN(nn.Module):
                                    dropout=self.rnn_drop,
                                    bidirectional=True,
                                    batch_first=True)
+        self.context_rnn_final = nn.LSTM(input_size=2*self.h_dim,
+                                   hidden_size=self.h_dim,
+                                   dropout=self.rnn_drop,
+                                   bidirectional=True,
+                                   batch_first=True)
         # self.context_transformer = nn.TransformerEncoderLayer(d_model=self.h_dim*2, nhead=4)
 
         self.response_rnn = nn.LSTM(input_size=self.emb_dim,
@@ -51,13 +56,17 @@ class TransformerRNN(nn.Module):
         c_out, (ht, ct) = self.context_rnn(c)  #
         c_out = self.concat_rnn_states(c_out, c_u_m)  # C X S X 2*H
         # c_out = self.context_transformer(c_out) # pass through the transformer C X S X 2*H
-        c_out = c_out.view(c_out.size(0)*c_out.size(1), -1) # C*S X 2*H
+        c_out, (ht, ct) = self.context_rnn_final(c_out) # C X S X 2*H
+        c_out = c_out.view(c_out.size(0), c_out.size(1), 2, self.h_dim)
+        c_out = torch.cat([c_out[:, :, 0, :], c_out[:, :, 1, :]], dim=-1)
+        c_out = c_out[:, -1].squeeze()
+        # c_out = c_out.view(c_out.size(0)*c_out.size(1), -1) # C*S X 2*H
         r_out, (ht, ct) = self.context_rnn(r)  #
         r_out = self.concat_rnn_states(r_out, r_u_m)[:, -1].squeeze()
         #c_out = F.max_pool1d(c_out, c_out.size(0))
         c_out = c_out.squeeze().expand(r_out.size(0), c_out.size(0), c_out.size(-1))  # R X C X 2*H
         #c_out = F.max_pool1d(c_out)
-        o = self.M(torch.tanh(c_out.sum(1))).unsqueeze(1)  # R X 1 X 2*H
+        o = self.M(torch.tanh(c_out[:, -1].squeeze())).unsqueeze(1)  # R X 1 X 2*H
         # print (o.size(), r_out.size())
         o = torch.bmm(o, r_out.unsqueeze(2)).squeeze()
         # print (o.size())
