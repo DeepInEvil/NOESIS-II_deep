@@ -80,8 +80,8 @@ class TransformerRNN(nn.Module):
         :return: B X S X
         """
         x = x.view(x.size(0), x.size(1), 2, self.h_dim)
-        fw = x[:, :, 0, :].squeeze() * m.unsqueeze(-1)
-        bw = x[:, :, 1, :].squeeze() * m.unsqueeze(-1)
+        #fw = x[:, :, 0, :].squeeze() * m.unsqueeze(-1)
+        #bw = x[:, :, 1, :].squeeze() * m.unsqueeze(-1)
         H = torch.cat([fw, bw], dim=-1)
 
         return H
