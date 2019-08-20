@@ -67,7 +67,7 @@ class TransformerRNN(nn.Module):
         #c_out = F.max_pool1d(c_out, c_out.size(0))
         c_out = c_out.squeeze().expand(r_out.size(0), c_out.size(0), c_out.size(-1))  # R X C X 2*H
         #c_out = F.max_pool1d(c_out)
-        o = self.M(torch.tanh(c_out.squeeze())).unsqueeze(1)  # R X 1 X 2*H
+        o = self.M(torch.tanh(c_out[:, -1].squeeze())).unsqueeze(1)  # R X 1 X 2*H
         # print (o.size(), r_out.size())
         o = torch.bmm(o, r_out.unsqueeze(2)).squeeze()
         # print (o.size())
