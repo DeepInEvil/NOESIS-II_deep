@@ -54,19 +54,20 @@ class TransformerRNN(nn.Module):
         r = self.emb_drop(self.word_embed(r))  # R X S X E
 
         c_out, (ht, ct) = self.context_rnn(c)  #
-        c_out = self.concat_rnn_states(c_out, c_u_m)  # C X S X 2*H
+        # c_out = self.concat_rnn_states(c_out, c_u_m)  # C X S X 2*H
         # c_out = self.context_transformer(c_out) # pass through the transformer C X S X 2*H
-        c_out, (ht, ct) = self.context_rnn_final(c_out) # C X S X 2*H
-        c_out = c_out.view(c_out.size(0), c_out.size(1), 2, self.h_dim)
-        c_out = torch.cat([c_out[:, :, 0, :], c_out[:, :, 1, :]], dim=-1)
-        c_out = c_out[:, -1].squeeze()
+        _, (c_out, c) = self.context_rnn_final(c_out) # C X S X 2*H
+        #c_out = c_out.view(c_out.size(0), c_out.size(1), 2, self.h_dim)
+        #c_out = torch.cat([c_out[:, :, 0, :], c_out[:, :, 1, :]], dim=-1)
+        c_out = c_out.transpose(0, 1).reshape(c.size(1), 2*c_out.size(2))  # B X N_L X H
+        #c_out = c_out[:, -1].squeeze()
         # c_out = c_out.view(c_out.size(0)*c_out.size(1), -1) # C*S X 2*H
         r_out, (ht, ct) = self.context_rnn(r)  #
         r_out = self.concat_rnn_states(r_out, r_u_m)[:, -1].squeeze()
         #c_out = F.max_pool1d(c_out, c_out.size(0))
         c_out = c_out.squeeze().expand(r_out.size(0), c_out.size(0), c_out.size(-1))  # R X C X 2*H
         #c_out = F.max_pool1d(c_out)
-        o = self.M(torch.tanh(c_out[:, -1].squeeze())).unsqueeze(1)  # R X 1 X 2*H
+        o = self.M(torch.tanh(c_out.squeeze())).unsqueeze(1)  # R X 1 X 2*H
         # print (o.size(), r_out.size())
         o = torch.bmm(o, r_out.unsqueeze(2)).squeeze()
         # print (o.size())
@@ -80,8 +81,8 @@ class TransformerRNN(nn.Module):
         :return: B X S X
         """
         x = x.view(x.size(0), x.size(1), 2, self.h_dim)
-        #fw = x[:, :, 0, :].squeeze() * m.unsqueeze(-1)
-        #bw = x[:, :, 1, :].squeeze() * m.unsqueeze(-1)
+        fw = x[:, :, 0, :].squeeze() * m.unsqueeze(-1)
+        bw = x[:, :, 1, :].squeeze() * m.unsqueeze(-1)
         H = torch.cat([fw, bw], dim=-1)
 
         return H
